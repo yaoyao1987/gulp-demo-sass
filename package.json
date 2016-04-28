@@ -1,0 +1,34 @@
+{
+  "name": "dai93",
+  "version": "1.0.0",
+  "description": "贷93",
+  "homepage": "",
+  "repository": {
+    "type": "git",
+    "url": "https://git.oschina.net/xxxx"
+  },
+  "author": {
+    "name": "yaoyao",
+    "email": "yaolingyan1987@126.com"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "browser-sync": "^2.12.5",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-clean": "^0.3.2",
+    "gulp-concat": "^2.6.0",
+    "gulp-csslint": "^0.3.0",
+    "gulp-eslint": "^2.0.0",
+    "gulp-htmlhint": "^0.3.1",
+    "gulp-imagemin": "^2.4.0",
+    "gulp-minify-css": "^1.2.4",
+    "gulp-rename": "^1.2.2",
+    "gulp-rev-easy": "^1.1.2",
+    "gulp-ruby-sass": "^2.0.6",
+    "gulp-sourcemaps": "^2.0.0-alpha",
+    "gulp-uglify": "^1.5.3",
+    "gulp-util": "^3.0.7",
+    "run-sequence": "^1.1.5"
+  }
+}

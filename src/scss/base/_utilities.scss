@@ -1,0 +1,15 @@
+.clearfix {
+  @include clearfix();
+}
+
+.heading {
+	border-bottom: 2px solid $heading-bg;
+}
+
+.heading span {
+	display: inline-block;
+	padding: $heading-padding;
+	font-size: $font-size-base;
+	color: $heading-color;
+	background-color: $heading-bg;
+}
