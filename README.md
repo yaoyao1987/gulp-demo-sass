@@ -69,19 +69,20 @@
 	var gulp = require('gulp'), //基础库
 	    imagemin = require('gulp-imagemin'), //图片压缩
 	    sass = require('gulp-ruby-sass'), //sass预处理维css
-	    autoprefixer = require('gulp-autoprefixer'),
-	    sourcemaps = require('gulp-sourcemaps'),    //处理JS时，生成SourceMap
+	    autoprefixer = require('gulp-autoprefixer'), //自动补全前缀
+	    sourcemaps = require('gulp-sourcemaps'), //处理JS时，生成SourceMap
 	    minifycss = require('gulp-minify-css'), //css压缩
-	    htmlhint = require('gulp-htmlhint'),    //html检查
-	    csslint = require('gulp-csslint'),
-	    eslint = require('gulp-eslint');    //js检查
+	    htmlhint = require('gulp-htmlhint'), //html检查
+	    csslint = require('gulp-csslint'), //css检查
+	    eslint = require('gulp-eslint'), //js检查
 	    uglify = require('gulp-uglify'), //js压缩
+	    htmlmin = require('gulp-htmlmin'), //压缩html
 	    rename = require('gulp-rename'), //重命名
 	    concat = require('gulp-concat'), //合并文件
 	    clean = require('gulp-clean'), //清空文件夹
-	    reveasy = require('gulp-rev-easy'),
-	    runSequence = require('run-sequence'),  //顺序执行任务
-	    browserSync = require('browser-sync');  //静态文件服务器，同时也支持浏览器自动刷新
+	    reveasy = require('gulp-rev-easy'), //添加版本号
+	    runSequence = require('run-sequence'), //顺序执行任务
+	    browserSync = require('browser-sync'); //静态文件服务器，同时也支持浏览器自动刷新
 
 	// HTML处理
 	gulp.task('html', function() {
@@ -93,6 +94,7 @@
 	        .pipe(htmlhint.failReporter())
 	        .pipe(gulp.dest(htmlDst))
 	        .pipe(reveasy()) //加上版本号
+	        .pipe(htmlmin({ collapseWhitespace: true }))
 	        .pipe(gulp.dest(htmlDst))
 	});
 
@@ -101,23 +103,23 @@
 	    var cssSrc = './src/scss/*.scss',
 	        cssDst = './dist/css';
 
-	    return sass(cssSrc,{style:'expanded',sourcemap:true})
-	            .on('error', sass.logError)
-	            .pipe(autoprefixer({
-	                browsers: ['> 1%', 'IE 8'],
-	                cascade: false
-	            }))
-	            .pipe(csslint())
-	            .pipe(csslint.reporter())
-	            .pipe(sourcemaps.write())
-	            .pipe(sourcemaps.write('maps', {
-	                includeContent: false,
-	                sourceRoot: './src/scss'
-	            }))
-	            .pipe(gulp.dest(cssDst))
-	            .pipe(rename({suffix: '.min'}))
-	            .pipe(minifycss())
-	            .pipe(gulp.dest(cssDst));
+	    return sass(cssSrc, { style: 'expanded', sourcemap: true })
+	        .on('error', sass.logError)
+	        .pipe(autoprefixer({
+	            browsers: ['> 1%', 'IE 8'],
+	            cascade: false
+	        }))
+	        .pipe(csslint())
+	        .pipe(csslint.reporter())
+	        .pipe(sourcemaps.write())
+	        .pipe(sourcemaps.write('maps', {
+	            includeContent: false,
+	            sourceRoot: './src/scss'
+	        }))
+	        .pipe(gulp.dest(cssDst))
+	        .pipe(rename({ suffix: '.min' }))
+	        .pipe(minifycss())
+	        .pipe(gulp.dest(cssDst));
 	});
 
 	// 图片处理
@@ -142,7 +144,7 @@
 	        //.pipe(rename({ suffix: '.min' }))
 	        .pipe(eslint())
 	        .pipe(eslint.format())
-	        .pipe(eslint.failAfterError())
+	        // .pipe(eslint.failAfterError())
 	        .pipe(uglify())
 	        .pipe(concat("main.js"))
 	        .pipe(gulp.dest(mainDst));
@@ -154,11 +156,9 @@
 	});
 
 	// 入口点
-	gulp.task('default', function(){
+	gulp.task('default', function() {
 	    runSequence(
-	        ['clean'],
-	        ['copy'],
-	        ['server']
+	        ['clean'], ['copy'], ['server']
 	    );
 	});
 
@@ -170,7 +170,10 @@
 
 	// 重建图片、样式、js
 	gulp.task('copy', function() {
-	    gulp.start('html', 'css', 'images', 'js');
+	    // gulp.start('css', 'js', 'images', 'html');
+	    runSequence(
+	        ['css'],['js'], ['html']
+	    );
 	});
 
 	// 监听任务 运行语句 gulp watch
@@ -204,9 +207,9 @@
 	        logPrefix: 'sw',
 	        server: 'dist'
 	    });
-	    gulp.watch('watch');
 	    gulp.watch(['dist/**/*'], browserSync.reload);
 	});
+
 	···
 
 ##	访问
@@ -215,4 +218,5 @@
 
 	```
 		gulp default
+		gulp watch
 	```
